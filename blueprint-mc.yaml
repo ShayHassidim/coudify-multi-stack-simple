@@ -18,23 +18,23 @@ dsl_definitions:
     key: /home/ec2-user/work/shay-cloudify-os.pem
 
   fabric_env_info: &fabric_env_info
-    host_string: { get_input: Compute-WebServer-IP }
+    host_string: { get_input: Cloud-B-WebServer-IP }
     user: centos
     key_filename: /home/ec2-user/work/shay-cloudify-os.pem
 
 inputs:
-  Compute-WebServer-IP:
+  Cloud-A-APP-Server-IP:
+    type: string
+    default: "10.8.0.18"
+  Cloud-A-LB-IP:
+    type: string
+    default: "10.8.0.18"
+  Cloud-A-DB-IP:
+    type: string
+    default: "10.8.0.18"
+  Cloud-B-WebServer-IP:
     type: string
     default: "185.98.151.92"
-  Compute-APP-Server-IP:
-    type: string
-    default: "10.8.0.18"
-  Compute-LB-IP:
-    type: string
-    default: "10.8.0.18"
-  Compute-DB-IP:
-    type: string
-    default: "10.8.0.18"
   WEB_SERVER_PORT:
     default: "6000"
 
@@ -46,7 +46,7 @@ node_templates:
     instances:
       deploy: 1
     properties:
-      ip: { get_input: Compute-WebServer-IP }
+      ip: { get_input: Cloud-B-WebServer-IP }
       agent_config:
         install_method: none
       cloudify_agent: *cloudify_agent_info_os
@@ -59,7 +59,7 @@ node_templates:
     instances:
       deploy: 1
     properties:
-      ip: { get_input: Compute-APP-Server-IP }
+      ip: { get_input: Cloud-A-APP-Server-IP }
       cloudify_agent: *cloudify_agent_info_aws
     relationships:
       - type: cloudify.relationships.connected_to
@@ -69,7 +69,7 @@ node_templates:
     instances:
       deploy: 1
     properties:
-      ip: { get_input: Compute-DB-IP }
+      ip: { get_input: Cloud-A-DB-IP }
       cloudify_agent: *cloudify_agent_info_aws
     relationships: []
   VM-LB-Cloud-A:
@@ -77,7 +77,7 @@ node_templates:
     instances:
       deploy: 1
     properties:
-      ip: { get_input: Compute-LB-IP }
+      ip: { get_input: Cloud-A-LB-IP }
       cloudify_agent: *cloudify_agent_info_aws
     relationships:
       - type: cloudify.relationships.connected_to
