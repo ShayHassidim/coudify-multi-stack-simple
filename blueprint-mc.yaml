@@ -39,7 +39,7 @@ inputs:
   WEB_SERVER_PORT:
     default: "6000"
 node_templates:
-  Compute-WebServer-Cloud-B:
+  VM-WebServer-Cloud-B:
     type: cloudify.nodes.Compute
     instances:
       deploy: 1
@@ -51,8 +51,8 @@ node_templates:
 
     relationships:
       - type: cloudify.relationships.connected_to
-        target: Compute-APP-Server-Cloud-A
-  Compute-APP-Server-Cloud-A:
+        target: VM-APP-Server-Cloud-A
+  VM-APP-Server-Cloud-A:
     type: cloudify.nodes.Compute
     instances:
       deploy: 1
@@ -61,8 +61,8 @@ node_templates:
       cloudify_agent: *cloudify_agent_info_aws
     relationships:
       - type: cloudify.relationships.connected_to
-        target: Compute-DB-Cloud-A
-  Compute-DB-Cloud-A:
+        target: VM-DB-Cloud-A
+  VM-DB-Cloud-A:
     type: cloudify.nodes.Compute
     instances:
       deploy: 1
@@ -70,7 +70,7 @@ node_templates:
       ip: { get_input: Compute-DB-IP }
       cloudify_agent: *cloudify_agent_info_aws
     relationships: []
-  Compute-LB-Cloud-A:
+  VM-LB-Cloud-A:
     type: cloudify.nodes.Compute
     instances:
       deploy: 1
@@ -79,7 +79,7 @@ node_templates:
       cloudify_agent: *cloudify_agent_info_aws
     relationships:
       - type: cloudify.relationships.connected_to
-        target: Compute-WebServer-Cloud-B
+        target: VM-WebServer-Cloud-B
   APPServer-JBoss:
     type: cloudify.nodes.ApplicationServer
     instances:
@@ -87,7 +87,7 @@ node_templates:
     properties:
     relationships:
       - type: cloudify.relationships.contained_in
-        target: Compute-APP-Server-Cloud-A
+        target: VM-APP-Server-Cloud-A
     interfaces:
       cloudify.interfaces.lifecycle:
         configure: scripts/configureAPPServer.sh
@@ -101,7 +101,7 @@ node_templates:
       port:  { get_input: WEB_SERVER_PORT }
     relationships:
       - type: cloudify.relationships.contained_in
-        target: Compute-WebServer-Cloud-B   
+        target: VM-WebServer-Cloud-B   
     interfaces:
       cloudify.interfaces.lifecycle:
         configure: 
@@ -127,7 +127,7 @@ node_templates:
     type: cloudify.nodes.DBMS
     relationships:
       - type: cloudify.relationships.contained_in
-        target: Compute-DB-Cloud-A 
+        target: VM-DB-Cloud-A 
     interfaces:
       cloudify.interfaces.lifecycle:
         configure: scripts/configureDB.sh
@@ -139,7 +139,7 @@ node_templates:
       deploy: 1
     relationships:
       - type: cloudify.relationships.contained_in
-        target: Compute-LB-Cloud-A 
+        target: VM-LB-Cloud-A 
     interfaces:
       cloudify.interfaces.lifecycle:
         create: {}
