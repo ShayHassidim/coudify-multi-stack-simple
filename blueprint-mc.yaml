@@ -36,12 +36,10 @@ node_templates:
       deploy: 1
     properties:
       ip: { get_input: Compute-WebServer-IP }
-      cloudify_agent: *cloudify_agent_info_os
-
       agent_config:
-        type: cloudify.datatypes.AgentConfig
         properties:
           install_method: none
+      cloudify_agent: *cloudify_agent_info_os
 
     relationships:
       - type: cloudify.relationships.connected_to
