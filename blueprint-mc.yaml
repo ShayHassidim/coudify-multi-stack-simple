@@ -38,10 +38,10 @@ node_templates:
       ip: { get_input: Compute-WebServer-IP }
       cloudify_agent: *cloudify_agent_info_os
 
-    agent_config:
-      type: cloudify.datatypes.AgentConfig
-      properties:
-        install_method: none
+      agent_config:
+        type: cloudify.datatypes.AgentConfig
+        properties:
+          install_method: none
 
     relationships:
       - type: cloudify.relationships.connected_to
