@@ -2,6 +2,9 @@ tosca_definitions_version: cloudify_dsl_1_3
 imports:
   - 'http://www.getcloudify.org/spec/cloudify/4.0/types.yaml'
   - 'http://www.getcloudify.org/spec/diamond-plugin/1.3.5/plugin.yaml'
+  - 'http://www.getcloudify.org/spec/fabric-plugin/1.3/plugin.yaml'
+
+
 plugins: {}
 node_types: {}
 
@@ -13,6 +16,12 @@ dsl_definitions:
   cloudify_agent_info_os: &cloudify_agent_info_os
     user: centos
     key: /home/ec2-user/work/shay-cloudify-os.pem
+
+
+  fabric_env_info: &fabric_env_info
+    host_string: 185.98.151.92
+    user: centos
+    key_filename: /home/ec2-user/work/shay-cloudify-os.pem
 
 inputs:
   Compute-WebServer-IP:
@@ -43,28 +52,6 @@ node_templates:
     relationships:
       - type: cloudify.relationships.connected_to
         target: Compute-APP-Server
-    interfaces:
-      cloudify.interfaces.monitoring_agent:
-        install:
-          implementation: diamond.diamond_agent.tasks.install
-          inputs:
-            diamond_config:
-              interval: 1
-        start: diamond.diamond_agent.tasks.start
-        stop: diamond.diamond_agent.tasks.stop
-        uninstall: diamond.diamond_agent.tasks.uninstall
-      cloudify.interfaces.monitoring:
-        start:
-          implementation: diamond.diamond_agent.tasks.add_collectors
-          inputs:
-            collectors_config:
-                CPUCollector: {}
-                MemoryCollector: {}
-                LoadAverageCollector: {}
-                DiskUsageCollector:
-                  config:
-                    devices: x?vd[a-z]+[0-9]*$
-                NetworkCollector: {}
   Compute-APP-Server:
     type: cloudify.nodes.Compute
     instances:
@@ -117,9 +104,22 @@ node_templates:
         target: Compute-WebServer   
     interfaces:
       cloudify.interfaces.lifecycle:
-        configure: scripts/configureWebServer.sh
-        start: scripts/startWebServer.sh
-        stop: scripts/stopWebServer.sh
+        configure: 
+          implementation: fabric.fabric_plugin.tasks.run_script
+          inputs:
+            script_path: scripts/configureWebServer.sh
+	    fabric_env: *fabric_env_info
+        start: 
+          implementation: fabric.fabric_plugin.tasks.run_script
+          inputs:
+            script_path: scripts/startWebServer.sh
+	    fabric_env: *fabric_env_info
+        stop: 
+          implementation: fabric.fabric_plugin.tasks.run_script
+          inputs:
+            script_path: scripts/stopWebServer.sh
+	    fabric_env: *fabric_env_info
+
   DBMS:
     type: cloudify.nodes.DBMS
     relationships:
