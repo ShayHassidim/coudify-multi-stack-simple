@@ -18,11 +18,6 @@ dsl_definitions:
     key: /home/ec2-user/work/shay-cloudify-os.pem
 
 
-  fabric_env_info: &fabric_env_info
-    host_string: 185.98.151.92
-    user: centos
-    key_filename: /home/ec2-user/work/shay-cloudify-os.pem
-
 inputs:
   Compute-WebServer-IP:
     type: string
@@ -38,6 +33,14 @@ inputs:
     default: "10.8.0.18"
   WEB_SERVER_PORT:
     default: "6000"
+
+
+  fabric_env_info: &fabric_env_info
+    host_string: { get_input: Compute-WebServer-IP }
+    user: centos
+    key_filename: /home/ec2-user/work/shay-cloudify-os.pem
+
+
 node_templates:
   VM-WebServer-Cloud-B:
     type: cloudify.nodes.Compute
