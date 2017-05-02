@@ -37,8 +37,7 @@ node_templates:
     properties:
       ip: { get_input: Compute-WebServer-IP }
       agent_config:
-        properties:
-          install_method: none
+        install_method: none
       cloudify_agent: *cloudify_agent_info_os
 
     relationships:
