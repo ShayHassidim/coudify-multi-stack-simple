@@ -41,7 +41,7 @@ node_templates:
     agent_config:
       type: cloudify.datatypes.AgentConfig
       properties:
-	install_method: none
+        install_method: none
 
     relationships:
       - type: cloudify.relationships.connected_to
