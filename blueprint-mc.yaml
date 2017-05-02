@@ -107,17 +107,20 @@ node_templates:
         configure: 
           implementation: fabric.fabric_plugin.tasks.run_script
           inputs:
-            script_path: scripts/configureWebServer.sh
+            script_path: scripts/test_script.sh
+#            script_path: scripts/configureWebServer.sh
             fabric_env: *fabric_env_info
         start: 
           implementation: fabric.fabric_plugin.tasks.run_script
           inputs:
-            script_path: scripts/startWebServer.sh
+            script_path: scripts/test_script.sh
+#            script_path: scripts/startWebServer.sh
             fabric_env: *fabric_env_info
         stop: 
           implementation: fabric.fabric_plugin.tasks.run_script
           inputs:
-            script_path: scripts/stopWebServer.sh
+            script_path: scripts/test_script.sh
+#            script_path: scripts/stopWebServer.sh
             fabric_env: *fabric_env_info
 
   DBMS:
